@@ -1,6 +1,7 @@
 package vitran.tienlen.game.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Deck {
@@ -12,6 +13,6 @@ public class Deck {
   }
 
   public void shuffle() {
-
+    Collections.shuffle(cards);
   }
 }

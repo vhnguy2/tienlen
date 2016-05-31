@@ -4,21 +4,40 @@ import android.support.annotation.NonNull;
 
 import java.util.Comparator;
 
-public abstract class Card implements Comparator<Card> {
+public abstract class Card implements Comparator<Card>, Comparable<Card> {
 
   public enum Suit {
     HEART, DIAMOND, CLUB, SPADE
   }
 
+  public enum Value {
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    EIGHT,
+    NINE,
+    TEN,
+    JACK,
+    QUEEN,
+    KING,
+    ACE
+  }
+
   @Override
   public abstract int compare(Card lhs, Card rhs);
+
+  @Override
+  public abstract int compareTo(Card rhs);
 
   public abstract int id();
 
   public final Suit suit;
-  public final int value;
+  public final Value value;
 
-  public Card(@NonNull Suit suit, int value) {
+  public Card(@NonNull Suit suit, @NonNull Value value) {
     this.suit = suit;
     this.value = value;
   }
