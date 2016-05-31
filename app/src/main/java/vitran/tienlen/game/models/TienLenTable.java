@@ -6,9 +6,12 @@ import android.support.annotation.Nullable;
 import vitran.tienlen.game.exception.PlayerAlreadyExistsException;
 
 public class TienLenTable {
-  public final TienLenPlayer[] players;
-  public final Deck deck;
-  public int currentPlayerToAct;
+  private final TienLenPlayer[] players;
+  private final Deck deck;
+  private int currentPlayerToAct;
+  private TienLenPlayHand lastPlayHand;
+  private int numOfConsecutiveTrumpPlays;
+  private int prevPlayerToPlay;
 
   public TienLenTable(int size) {
     players = new TienLenPlayer[size];
@@ -26,9 +29,15 @@ public class TienLenTable {
     players[position] = null;
   }
 
+  public void setLastPlayHand(@NonNull TienLenPlayHand playHand) {
+    lastPlayHand = playHand;
+    prevPlayerToPlay = currentPlayerToAct;
+  }
+
   @Nullable
   public TienLenPlayer nextPlayer() {
-    for (int i = 0; i < players.length; i++) {
+    // ask all other players if they want to play, excluding the current player
+    for (int i = 0; i < players.length - 1; i++) {
       currentPlayerToAct = (currentPlayerToAct + 1) % players.length;
       if (players[currentPlayerToAct].isInLoop) {
         return players[currentPlayerToAct];
@@ -36,5 +45,45 @@ public class TienLenTable {
     }
 
     return null;
+  }
+
+  public TienLenPlayer[] getPlayers() {
+    return players;
+  }
+
+  public Deck getDeck() {
+    return deck;
+  }
+
+  public int getCurrentPlayerToAct() {
+    return currentPlayerToAct;
+  }
+
+  public void setCurrentPlayerToAct(int currentPlayerToAct) {
+    this.currentPlayerToAct = currentPlayerToAct;
+  }
+
+  public TienLenPlayHand getLastPlayHand() {
+    return lastPlayHand;
+  }
+
+  public void resetNumOfConsecutiveTrumpPlays() {
+    numOfConsecutiveTrumpPlays = 0;
+  }
+
+  public void incrementNumOfConsecutiveTrumpPlays() {
+    numOfConsecutiveTrumpPlays++;
+  }
+
+  public int getNumOfConsecutiveTrumpPlays() {
+    return numOfConsecutiveTrumpPlays;
+  }
+
+  public int getPrevPlayerToPlay() {
+    return prevPlayerToPlay;
+  }
+
+  public void setPrevPlayerToPlay(int prevPlayerToPlay) {
+    this.prevPlayerToPlay = prevPlayerToPlay;
   }
 }

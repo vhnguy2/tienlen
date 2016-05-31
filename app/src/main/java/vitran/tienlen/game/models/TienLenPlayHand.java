@@ -7,14 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 import vitran.tienlen.game.engine.TienLenEvaluator;
+import vitran.tienlen.game.exception.IllegalPlayTypeException;
 
 public class TienLenPlayHand implements Comparable<TienLenPlayHand> {
   public List<Card> cards;
   public TienLenEvaluator.PlayType playType;
 
-  public TienLenPlayHand(@NonNull List<Card> cards, @NonNull TienLenEvaluator.PlayType playType) {
+  public TienLenPlayHand(@NonNull List<Card> cards) throws IllegalPlayTypeException {
     this.cards = new ArrayList<>(cards);
-    this.playType = playType;
+    this.playType = TienLenEvaluator.computePlayType(cards);
 
     Collections.sort(this.cards);
   }
@@ -25,7 +26,7 @@ public class TienLenPlayHand implements Comparable<TienLenPlayHand> {
       return cards.get(0).compareTo(rhs.cards.get(0));
     }
     if (isTrump(rhs)) {
-
+      return 1;
     }
 
     return -1;
