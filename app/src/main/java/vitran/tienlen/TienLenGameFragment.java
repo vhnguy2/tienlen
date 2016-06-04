@@ -83,7 +83,7 @@ public class TienLenGameFragment extends BaseFragment {
         @Override
         public void deal(@NonNull TienLenPlayer player, @NonNull Card card) {
           if (player.getId() == mePlayer.getId()) {
-            ImageView viewToSwap = (ImageView) cards.get(player.getHand().size() - 1);
+            ImageView viewToSwap = cards.get(player.getHand().size() - 1);
             viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
           }
         }
