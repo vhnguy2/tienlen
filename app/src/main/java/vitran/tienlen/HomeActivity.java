@@ -1,37 +1,39 @@
 package vitran.tienlen;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentActivity;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends FragmentActivity implements BaseFragment.BaseFragmentHost {
+
+  public static final String HOME_FRAGMENT_TAG = "homeFragment";
+  public static final String TIEN_LEN_GAME_FRAGMENT_TAG = "tienLenGameFragment";
+
+  private BaseFragment baseFragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.home_activity);
+    swapFragment(HOME_FRAGMENT_TAG);
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.x, menu);
-    return true;
-  }
+  public void swapFragment(String fragmentTag) {
+    baseFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag);
+    if (baseFragment == null) {
+      switch (fragmentTag) {
+        case HOME_FRAGMENT_TAG:
+          baseFragment = HomeFragment.createInstance(this);
+          break;
+        case TIEN_LEN_GAME_FRAGMENT_TAG:
+          baseFragment = TienLenGameFragment.createInstance(this);
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
+      }
     }
 
-    return super.onOptionsItemSelected(item);
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.home_container, baseFragment)
+        .commit();
   }
 }

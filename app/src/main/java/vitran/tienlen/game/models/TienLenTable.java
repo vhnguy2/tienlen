@@ -15,7 +15,7 @@ public class TienLenTable {
 
   public TienLenTable(int size) {
     players = new TienLenPlayer[size];
-    deck = new Deck();
+    deck = buildDefaultDeck();
   }
 
   public void addPlayer(int position, @NonNull TienLenPlayer player) throws PlayerAlreadyExistsException {
@@ -85,5 +85,15 @@ public class TienLenTable {
 
   public void setPrevPlayerToPlay(int prevPlayerToPlay) {
     this.prevPlayerToPlay = prevPlayerToPlay;
+  }
+
+  private Deck buildDefaultDeck() {
+    Deck deck = new Deck();
+    for (Card.Suit suit : Card.Suit.values()) {
+      for (Card.Value value : Card.Value.values()) {
+        deck.cards.add(new TienLenCard(suit, value));
+      }
+    }
+    return deck;
   }
 }

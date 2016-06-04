@@ -1,15 +1,22 @@
 package vitran.tienlen.game.models;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import vitran.tienlen.game.exception.CardDoesNotExistException;
 
 public class Player {
 
-  public List<Card> hand;
+  private final long id;
+  private final String name;
+  private List<Card> hand;
 
-  public Player() {
+  public Player(long id, @NonNull String name) {
+    this.id = id;
+    this.name = name;
     hand = new ArrayList<>();
   }
 
@@ -33,5 +40,17 @@ public class Player {
 
   public List<Card> getHand() {
     return new ArrayList<>(hand);
+  }
+
+  public void sortHand() {
+    Collections.sort(hand);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public long getId() {
+    return id;
   }
 }

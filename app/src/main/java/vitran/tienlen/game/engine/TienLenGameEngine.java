@@ -3,12 +3,16 @@ package vitran.tienlen.game.engine;
 import android.support.annotation.NonNull;
 
 import vitran.tienlen.game.exception.CardDoesNotExistException;
+import vitran.tienlen.game.exception.PlayerAlreadyExistsException;
 import vitran.tienlen.game.models.Card;
 import vitran.tienlen.game.models.Deck;
 import vitran.tienlen.game.models.TienLenPlayHand;
 import vitran.tienlen.game.models.TienLenPlayer;
 import vitran.tienlen.game.models.TienLenTable;
 
+/**
+ * TODO(viet): expand to support multiple players
+ */
 public class TienLenGameEngine {
 
   private static final int MAX_NUM_PLAYERS = 4;
@@ -18,6 +22,10 @@ public class TienLenGameEngine {
 
   public TienLenGameEngine() {
     table = new TienLenTable(MAX_NUM_PLAYERS);
+  }
+
+  public void addPlayer(int position, TienLenPlayer player) throws PlayerAlreadyExistsException {
+    table.addPlayer(position, player);
   }
 
   public void reset(@NonNull TienLenDealCallback callback) {
@@ -84,12 +92,15 @@ public class TienLenGameEngine {
     TienLenPlayer[] players = table.getPlayers();
     Deck deck = table.getDeck();
 
+    int currPlayer = 0;
     for (Card card : deck.cards) {
-      for (int i = 0; i < MAX_NUM_PLAYERS; i++) {
-        players[i].addCardToHand(card);
-        callback.deal(players[i], card);
-      }
+      players[currPlayer].addCardToHand(card);
+      callback.deal(players[currPlayer], card);
+
+      currPlayer = (currPlayer + 1) % MAX_NUM_PLAYERS;
     }
+
+    callback.onCompleted();
   }
 
   interface TienLenCallback {
@@ -102,11 +113,12 @@ public class TienLenGameEngine {
     void gameOver(@NonNull TienLenPlayer winner, @NonNull TienLenTable table);
   }
 
-  interface TienLenDealCallback {
+  public interface TienLenDealCallback {
     void deal(@NonNull TienLenPlayer player, @NonNull Card card);
+    void onCompleted();
   }
 
-  interface TienLenPlayCallback {
+  public interface TienLenPlayCallback {
     boolean isTrump(
         int numConsecutiveTrumps,
         @NonNull TienLenPlayer loser,
