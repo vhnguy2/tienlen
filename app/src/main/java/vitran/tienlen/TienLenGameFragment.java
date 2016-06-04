@@ -1,9 +1,11 @@
 package vitran.tienlen;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +24,11 @@ public class TienLenGameFragment extends BaseFragment {
 
   private static final String TAG = TienLenGameFragment.class.getSimpleName();
 
+  private float toggleTranslationInPx;
+
   private final List<ImageView> cards = new ArrayList<>();
   private final TienLenGameEngine gameEngine = new TienLenGameEngine();
+  private final Handler handler = new Handler();
 
   // TODO(viet): dynamically populate this
   private final TienLenPlayer mePlayer = new TienLenPlayer(0, "Viet");
@@ -38,6 +43,12 @@ public class TienLenGameFragment extends BaseFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     // TODO(viet): handle the save of fragment being re-created
+
+    toggleTranslationInPx = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        15,
+        getResources().getDisplayMetrics()
+    );
 
     if (savedInstanceState == null) {
       setupGameEngine();
@@ -74,6 +85,8 @@ public class TienLenGameFragment extends BaseFragment {
       // TODO(viet): wait for the player to explicitly triggers the deal functionality
       // start the game
       gameEngine.reset(dealCallback());
+
+      setupTableListeners();
     }
   }
 
@@ -84,7 +97,7 @@ public class TienLenGameFragment extends BaseFragment {
         public void deal(@NonNull TienLenPlayer player, @NonNull Card card) {
           if (player.getId() == mePlayer.getId()) {
             ImageView viewToSwap = cards.get(player.getHand().size() - 1);
-            viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
+            updateCardImage(viewToSwap, card);
           }
         }
 
@@ -95,13 +108,46 @@ public class TienLenGameFragment extends BaseFragment {
     };
   }
 
+  private void updateCardImage(@NonNull final ImageView viewToSwap, @NonNull Card card) {
+    viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        // resize height of card
+        ViewGroup.LayoutParams lp = viewToSwap.getLayoutParams();
+        lp.height = (int) (1.452 * viewToSwap.getWidth());
+        viewToSwap.setLayoutParams(lp);
+      }
+    });
+  }
+
   private void sortHand() {
     mePlayer.sortHand();
     int currLocation = 0;
     for (ImageView viewToSwap : cards) {
-      viewToSwap
-          .setImageResource(CardDrawableResolver.resolve(mePlayer.getHand().get(currLocation++)));
+      updateCardImage(viewToSwap, mePlayer.getHand().get(currLocation++));
     }
+  }
+
+  private void setupTableListeners() {
+    for (ImageView cardView : cards) {
+      cardView.setOnClickListener(buildCardClickListener(cardView));
+    }
+  }
+
+  private View.OnClickListener buildCardClickListener(@NonNull final ImageView imageView) {
+    return new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        toggleCard(imageView);
+      }
+    };
+  }
+
+  private void toggleCard(@NonNull ImageView imageView) {
+    // TODO(viet): refactor this
+    boolean isSelected = imageView.getTranslationY() != 0;
+    imageView.setTranslationY(isSelected ? 0 : -toggleTranslationInPx);
   }
 
   private void setupGameEngine() {
