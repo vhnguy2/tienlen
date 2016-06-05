@@ -107,6 +107,7 @@ public class TienLenGameFragment extends BaseFragment {
           if (player.getId() == mePlayer.getId()) {
             ImageView viewToSwap = cards.get(player.getHand().size() - 1);
             updateCardImage(viewToSwap, card);
+
           }
         }
 
@@ -139,7 +140,7 @@ public class TienLenGameFragment extends BaseFragment {
     for (ImageView viewToSwap : cards) {
       if (mePlayer.getHand().size() <= currLocation) {
         viewToSwap.setImageResource(0);
-        viewToSwap.setVisibility(View.GONE);
+        viewToSwap.setVisibility(View.INVISIBLE);
       } else {
         updateCardImage(viewToSwap, mePlayer.getHand().get(currLocation++));
       }
