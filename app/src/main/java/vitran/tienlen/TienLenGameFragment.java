@@ -118,6 +118,8 @@ public class TienLenGameFragment extends BaseFragment {
   }
 
   private void updateCardImage(@NonNull final ImageView viewToSwap, @NonNull Card card) {
+    viewToSwap.setVisibility(View.VISIBLE);
+    viewToSwap.setTranslationY(0f);
     viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
     viewToSwap.setTag(card);
     handler.post(new Runnable() {
@@ -135,7 +137,12 @@ public class TienLenGameFragment extends BaseFragment {
     mePlayer.sortHand();
     int currLocation = 0;
     for (ImageView viewToSwap : cards) {
-      updateCardImage(viewToSwap, mePlayer.getHand().get(currLocation++));
+      if (mePlayer.getHand().size() <= currLocation) {
+        viewToSwap.setImageResource(0);
+        viewToSwap.setVisibility(View.GONE);
+      } else {
+        updateCardImage(viewToSwap, mePlayer.getHand().get(currLocation++));
+      }
     }
   }
 
@@ -143,6 +150,8 @@ public class TienLenGameFragment extends BaseFragment {
     for (ImageView cardView : cards) {
       cardView.setOnClickListener(buildCardClickListener(cardView));
     }
+
+    playButton.setOnClickListener(buildPlayClickListener());
   }
 
   private View.OnClickListener buildCardClickListener(@NonNull final ImageView imageView) {
@@ -150,6 +159,29 @@ public class TienLenGameFragment extends BaseFragment {
       @Override
       public void onClick(View v) {
         toggleCard(imageView);
+      }
+    };
+  }
+
+  private View.OnClickListener buildPlayClickListener() {
+    return new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        gameEngine.play(mePlayer, getCardSelection(), new TienLenGameEngine.TienLenPlayCallback() {
+          @Override
+          public boolean isTrump(
+              int numConsecutiveTrumps,
+              @NonNull TienLenPlayer loser,
+              @NonNull TienLenPlayer winner) {
+            return false;
+          }
+
+          @Override
+          public void onCompleted() {
+            sortHand();
+            playButton.setEnabled(false);
+          }
+        });
       }
     };
   }

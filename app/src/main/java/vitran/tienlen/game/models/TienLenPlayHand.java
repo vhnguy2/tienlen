@@ -20,6 +20,10 @@ public class TienLenPlayHand implements Comparable<TienLenPlayHand> {
     Collections.sort(this.cards);
   }
 
+  public boolean isBetterThan(@NonNull TienLenPlayHand rhs) {
+    return compareTo(rhs) > 0;
+  }
+
   @Override
   public int compareTo(@NonNull TienLenPlayHand rhs) {
     if (playType == rhs.playType) {

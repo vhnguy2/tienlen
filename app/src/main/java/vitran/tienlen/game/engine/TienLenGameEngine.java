@@ -55,13 +55,13 @@ public class TienLenGameEngine {
       @NonNull TienLenPlayHand playHand,
       @NonNull TienLenPlayCallback callback) {
     TienLenPlayHand lastPlayHand = table.getLastPlayHand();
-    if (lastPlayHand.compareTo(playHand) < 1) {
+    if (lastPlayHand != null && lastPlayHand.isBetterThan(playHand)) {
       return false;
     }
 
     try {
       // handle trumps
-      boolean isTrumpPlay = lastPlayHand.isTrump(playHand);
+      boolean isTrumpPlay = lastPlayHand != null && lastPlayHand.isTrump(playHand);
       if (isTrumpPlay) {
         table.incrementNumOfConsecutiveTrumpPlays();
         callback.isTrump(
@@ -82,6 +82,7 @@ public class TienLenGameEngine {
       return false;
     }
 
+    callback.onCompleted();
     return true;
   }
 
@@ -129,5 +130,6 @@ public class TienLenGameEngine {
         @NonNull TienLenPlayer loser,
         @NonNull TienLenPlayer winner
     );
+    void onCompleted();
   }
 }

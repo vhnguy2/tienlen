@@ -7,7 +7,7 @@ import java.util.Comparator;
 public abstract class Card implements Comparator<Card>, Comparable<Card> {
 
   public enum Suit {
-    HEART, DIAMOND, CLUB, SPADE
+    SPADE, CLUB, DIAMOND, HEART
   }
 
   public enum Value {

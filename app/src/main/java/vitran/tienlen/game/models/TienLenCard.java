@@ -10,7 +10,7 @@ public class TienLenCard extends Card {
 
   @Override
   public int compare(Card lhs, Card rhs) {
-    return rhs.id() - lhs.id();
+    return lhs.id() - rhs.id();
   }
 
   @Override
