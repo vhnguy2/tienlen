@@ -1,5 +1,6 @@
 package vitran.tienlen;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -28,8 +29,10 @@ public class TienLenGameFragment extends BaseFragment {
   private static final String TAG = TienLenGameFragment.class.getSimpleName();
 
   private float toggleTranslationInPx;
+  private int cardWidth;
 
   private final List<ImageView> cards = new ArrayList<>();
+  private final List<ImageView> tableCardViews = new ArrayList<>();
   private final TienLenGameEngine gameEngine = new TienLenGameEngine();
   private final Handler handler = new Handler();
 
@@ -56,6 +59,10 @@ public class TienLenGameFragment extends BaseFragment {
         getResources().getDisplayMetrics()
     );
 
+    Point screenDim = new Point();
+    getActivity().getWindowManager().getDefaultDisplay().getSize(screenDim);
+    cardWidth = (int) (screenDim.x - toggleTranslationInPx - toggleTranslationInPx) / 13;
+
     if (savedInstanceState == null) {
       setupGameEngine();
     }
@@ -79,6 +86,20 @@ public class TienLenGameFragment extends BaseFragment {
     cards.add((ImageView) v.findViewById(R.id.tien_len_player_card_11));
     cards.add((ImageView) v.findViewById(R.id.tien_len_player_card_12));
     cards.add((ImageView) v.findViewById(R.id.tien_len_player_card_13));
+
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_1));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_2));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_3));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_4));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_5));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_6));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_7));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_8));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_9));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_10));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_11));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_12));
+    tableCardViews.add((ImageView) v.findViewById(R.id.tien_len_table_card_13));
 
     playButton = (Button) v.findViewById(R.id.tien_len_play);
     passButton = (Button) v.findViewById(R.id.tien_len_pass);
@@ -107,7 +128,6 @@ public class TienLenGameFragment extends BaseFragment {
           if (player.getId() == mePlayer.getId()) {
             ImageView viewToSwap = cards.get(player.getHand().size() - 1);
             updateCardImage(viewToSwap, card);
-
           }
         }
 
@@ -119,19 +139,18 @@ public class TienLenGameFragment extends BaseFragment {
   }
 
   private void updateCardImage(@NonNull final ImageView viewToSwap, @NonNull Card card) {
+    // resize height of card
+    if (viewToSwap.getTag() == null) {
+      ViewGroup.LayoutParams lp = viewToSwap.getLayoutParams();
+      lp.width = cardWidth;
+      lp.height = (int) (1.452 * cardWidth);
+      viewToSwap.setLayoutParams(lp);
+    }
+
     viewToSwap.setVisibility(View.VISIBLE);
     viewToSwap.setTranslationY(0f);
     viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
     viewToSwap.setTag(card);
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        // resize height of card
-        ViewGroup.LayoutParams lp = viewToSwap.getLayoutParams();
-        lp.height = (int) (1.452 * viewToSwap.getWidth());
-        viewToSwap.setLayoutParams(lp);
-      }
-    });
   }
 
   private void sortHand() {
@@ -140,7 +159,7 @@ public class TienLenGameFragment extends BaseFragment {
     for (ImageView viewToSwap : cards) {
       if (mePlayer.getHand().size() <= currLocation) {
         viewToSwap.setImageResource(0);
-        viewToSwap.setVisibility(View.INVISIBLE);
+        viewToSwap.setVisibility(View.GONE);
       } else {
         updateCardImage(viewToSwap, mePlayer.getHand().get(currLocation++));
       }
@@ -155,6 +174,7 @@ public class TienLenGameFragment extends BaseFragment {
     playButton.setOnClickListener(buildPlayClickListener());
   }
 
+  @NonNull
   private View.OnClickListener buildCardClickListener(@NonNull final ImageView imageView) {
     return new View.OnClickListener() {
       @Override
@@ -164,11 +184,13 @@ public class TienLenGameFragment extends BaseFragment {
     };
   }
 
+  @NonNull
   private View.OnClickListener buildPlayClickListener() {
     return new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        gameEngine.play(mePlayer, getCardSelection(), new TienLenGameEngine.TienLenPlayCallback() {
+        final TienLenPlayHand cardsToPlay = getCardSelection();
+        gameEngine.play(mePlayer, cardsToPlay, new TienLenGameEngine.TienLenPlayCallback() {
           @Override
           public boolean isTrump(
               int numConsecutiveTrumps,
@@ -181,10 +203,23 @@ public class TienLenGameFragment extends BaseFragment {
           public void onCompleted() {
             sortHand();
             playButton.setEnabled(false);
+            updateTableCards(cardsToPlay.cards);
           }
         });
       }
     };
+  }
+
+  private void updateTableCards(@NonNull List<Card> playedCards) {
+    int currLocation = 0;
+    for (ImageView viewToSwap : tableCardViews) {
+      if (playedCards.size() <= currLocation) {
+        viewToSwap.setImageResource(0);
+        viewToSwap.setVisibility(View.GONE);
+      } else {
+        updateCardImage(viewToSwap, playedCards.get(currLocation++));
+      }
+    }
   }
 
   private void toggleCard(@NonNull ImageView imageView) {
