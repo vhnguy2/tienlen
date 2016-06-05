@@ -95,6 +95,11 @@ public class TienLenGameEngine {
   }
 
   private void deal(@NonNull TienLenDealCallback callback) {
+    if (!table.isReadyToPlay()) {
+      callback.onDealFailed();
+      return;
+    }
+
     TienLenPlayer[] players = table.getPlayers();
     Deck deck = table.getDeck();
 
@@ -122,6 +127,7 @@ public class TienLenGameEngine {
   public interface TienLenDealCallback {
     void deal(@NonNull TienLenPlayer player, @NonNull Card card);
     void onCompleted();
+    void onDealFailed();
   }
 
   public interface TienLenPlayCallback {

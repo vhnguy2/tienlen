@@ -14,12 +14,15 @@ public class TienLenTable {
   private int prevPlayerToPlay;
 
   public TienLenTable(int size) {
-    players = new TienLenPlayer[size];
     deck = buildDefaultDeck();
+    players = new TienLenPlayer[size];
+    for (int i = 0; i < size; i++) {
+      players[i] = new TienLenGhostPlayer();
+    }
   }
 
   public void addPlayer(int position, @NonNull TienLenPlayer player) throws PlayerAlreadyExistsException {
-    if (players[position] != null) {
+    if (!(players[position] instanceof TienLenGhostPlayer)) {
       throw new PlayerAlreadyExistsException(String.format("Player at position %d already exists", position));
     }
     players[position] = player;
@@ -32,6 +35,15 @@ public class TienLenTable {
   public void setLastPlayHand(@NonNull TienLenPlayHand playHand) {
     lastPlayHand = playHand;
     prevPlayerToPlay = currentPlayerToAct;
+  }
+
+  public boolean isReadyToPlay() {
+    int numOfPlayers = 0;
+    for (TienLenPlayer player : players) {
+      numOfPlayers = player instanceof TienLenGhostPlayer ? numOfPlayers : numOfPlayers + 1;
+    }
+
+    return numOfPlayers > 1;
   }
 
   @Nullable
