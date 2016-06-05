@@ -43,7 +43,7 @@ public class Player {
   }
 
   public void sortHand() {
-    Collections.sort(hand);
+    Collections.sort(hand, Collections.<Card>reverseOrder());
   }
 
   public String getName() {

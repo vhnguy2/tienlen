@@ -1,6 +1,7 @@
 package vitran.tienlen.game.engine;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import vitran.tienlen.game.exception.CardDoesNotExistException;
 import vitran.tienlen.game.exception.PlayerAlreadyExistsException;
@@ -82,6 +83,10 @@ public class TienLenGameEngine {
     }
 
     return true;
+  }
+
+  public boolean isSelectionPlayable(@Nullable TienLenPlayHand playHand) {
+    return playHand != null && table.isPlayable(playHand);
   }
 
   private void shuffle() {

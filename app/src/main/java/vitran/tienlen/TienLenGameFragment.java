@@ -9,14 +9,17 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import vitran.tienlen.game.engine.TienLenGameEngine;
+import vitran.tienlen.game.exception.IllegalPlayTypeException;
 import vitran.tienlen.game.exception.PlayerAlreadyExistsException;
 import vitran.tienlen.game.models.Card;
+import vitran.tienlen.game.models.TienLenPlayHand;
 import vitran.tienlen.game.models.TienLenPlayer;
 import vitran.tienlen.ui.CardDrawableResolver;
 
@@ -32,6 +35,9 @@ public class TienLenGameFragment extends BaseFragment {
 
   // TODO(viet): dynamically populate this
   private final TienLenPlayer mePlayer = new TienLenPlayer(0, "Viet");
+
+  private Button playButton;
+  private Button passButton;
 
   public TienLenGameFragment() {}
 
@@ -74,6 +80,9 @@ public class TienLenGameFragment extends BaseFragment {
     cards.add((ImageView) v.findViewById(R.id.tien_len_player_card_12));
     cards.add((ImageView) v.findViewById(R.id.tien_len_player_card_13));
 
+    playButton = (Button) v.findViewById(R.id.tien_len_play);
+    passButton = (Button) v.findViewById(R.id.tien_len_pass);
+
     return v;
   }
 
@@ -110,6 +119,7 @@ public class TienLenGameFragment extends BaseFragment {
 
   private void updateCardImage(@NonNull final ImageView viewToSwap, @NonNull Card card) {
     viewToSwap.setImageResource(CardDrawableResolver.resolve(card));
+    viewToSwap.setTag(card);
     handler.post(new Runnable() {
       @Override
       public void run() {
@@ -148,6 +158,27 @@ public class TienLenGameFragment extends BaseFragment {
     // TODO(viet): refactor this
     boolean isSelected = imageView.getTranslationY() != 0;
     imageView.setTranslationY(isSelected ? 0 : -toggleTranslationInPx);
+
+    boolean playable = gameEngine.isSelectionPlayable(getCardSelection());
+    playButton.setEnabled(playable);
+  }
+
+  @Nullable
+  private TienLenPlayHand getCardSelection() {
+    List<Card> selectedCards = new ArrayList<>();
+    for (ImageView cardView : cards) {
+      boolean isSelected = cardView.getTranslationY() != 0;
+      if (isSelected) {
+        selectedCards.add((Card) cardView.getTag());
+      }
+    }
+
+    try {
+      return new TienLenPlayHand(selectedCards);
+    } catch (IllegalPlayTypeException e) {
+      // the user has selected an illegal hand
+    }
+    return null;
   }
 
   private void setupGameEngine() {

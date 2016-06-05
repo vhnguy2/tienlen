@@ -87,6 +87,10 @@ public class TienLenTable {
     this.prevPlayerToPlay = prevPlayerToPlay;
   }
 
+  public boolean isPlayable(@NonNull TienLenPlayHand hand) {
+    return lastPlayHand == null || hand.compareTo(lastPlayHand) > 0;
+  }
+
   private Deck buildDefaultDeck() {
     Deck deck = new Deck();
     for (Card.Suit suit : Card.Suit.values()) {

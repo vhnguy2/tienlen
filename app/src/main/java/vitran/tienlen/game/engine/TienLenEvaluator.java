@@ -84,6 +84,7 @@ public class TienLenEvaluator {
       if (prevCard.value.ordinal() - 1 != currCard.value.ordinal()) {
         return false;
       }
+      prevCard = currCard;
     }
 
     return true;
