@@ -26,7 +26,7 @@ public class TienLenPlayHand implements Comparable<TienLenPlayHand> {
 
   @Override
   public int compareTo(@NonNull TienLenPlayHand rhs) {
-    if (playType == rhs.playType) {
+    if (playType == rhs.playType && cards.size() == rhs.cards.size()) {
       return cards.get(0).compareTo(rhs.cards.get(0));
     }
     if (isTrump(rhs)) {

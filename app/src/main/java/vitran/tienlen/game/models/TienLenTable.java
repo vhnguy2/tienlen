@@ -88,7 +88,7 @@ public class TienLenTable {
   }
 
   public boolean isPlayable(@NonNull TienLenPlayHand hand) {
-    return lastPlayHand == null || hand.compareTo(lastPlayHand) > 0;
+    return lastPlayHand == null || hand.isBetterThan(lastPlayHand);
   }
 
   private Deck buildDefaultDeck() {

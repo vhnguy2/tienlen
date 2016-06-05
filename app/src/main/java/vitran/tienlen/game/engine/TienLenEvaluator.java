@@ -15,6 +15,9 @@ public class TienLenEvaluator {
   }
 
   public static PlayType computePlayType(@NonNull List<Card> cards) throws IllegalPlayTypeException {
+    // highest to lowest
+    Collections.sort(cards, Collections.<Card>reverseOrder());
+
     if (isSingle(cards)) {
       return PlayType.SINGLE;
     }
@@ -70,7 +73,6 @@ public class TienLenEvaluator {
       return false;
     }
 
-    Collections.sort(cards);
     Card prevCard = cards.get(0);
 
     // cannot contain a 2
@@ -94,8 +96,6 @@ public class TienLenEvaluator {
     if (cards.size() < 6 || cards.size() % 2 == 0) {
       return false;
     }
-
-    Collections.sort(cards);
 
     Card.Value prevValue = null;
 
