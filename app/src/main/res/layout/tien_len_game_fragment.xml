@@ -6,9 +6,12 @@
     android:background="@color/green"
     android:orientation="vertical"
     >
-  <View
+  <vitran.tienlen.ui.HorizontalHand
+      android:id="@+id/player3_hand"
       android:layout_width="match_parent"
-      android:layout_height="100dp"
+      android:layout_height="wrap_content"
+      android:layout_margin="10dp"
+      android:gravity="center"
       />
 
   <LinearLayout
@@ -18,13 +21,17 @@
       android:gravity="center"
       android:orientation="horizontal"
       >
-    <FrameLayout
+    <vitran.tienlen.ui.VerticalHand
+        android:id="@+id/player2_hand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
         />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:layout_margin="5dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -95,10 +102,13 @@
           android:layout_height="wrap_content"
           />
     </LinearLayout>
-    <FrameLayout
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      />
+    <vitran.tienlen.ui.VerticalHand
+        android:id="@+id/player4_hand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        />
   </LinearLayout>
 
   <LinearLayout

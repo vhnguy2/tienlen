@@ -24,6 +24,8 @@ import vitran.tienlen.game.models.Card;
 import vitran.tienlen.game.models.TienLenPlayHand;
 import vitran.tienlen.game.models.TienLenPlayer;
 import vitran.tienlen.ui.CardDrawableResolver;
+import vitran.tienlen.ui.HorizontalHand;
+import vitran.tienlen.ui.VerticalHand;
 
 public class TienLenGameFragment extends BaseFragment {
 
@@ -32,8 +34,13 @@ public class TienLenGameFragment extends BaseFragment {
   private float toggleTranslationInPx;
   private int cardWidth;
 
+  // subviews
   private final List<ImageView> cards = new ArrayList<>();
   private final List<ImageView> tableCardViews = new ArrayList<>();
+  private VerticalHand player2HandView;
+  private HorizontalHand player3HandView;
+  private VerticalHand player4HandView;
+
   private final TienLenGameEngine gameEngine = new TienLenGameEngine();
   private final Handler handler = new Handler();
 
@@ -105,6 +112,10 @@ public class TienLenGameFragment extends BaseFragment {
     playButton = (Button) v.findViewById(R.id.tien_len_play);
     passButton = (Button) v.findViewById(R.id.tien_len_pass);
 
+    player2HandView = (VerticalHand) v.findViewById(R.id.player2_hand);
+    player3HandView = (HorizontalHand) v.findViewById(R.id.player3_hand);
+    player4HandView = (VerticalHand) v.findViewById(R.id.player4_hand);
+
     return v;
   }
 
@@ -129,6 +140,18 @@ public class TienLenGameFragment extends BaseFragment {
           if (player.getId() == mePlayer.getId()) {
             ImageView viewToSwap = cards.get(player.getHand().size() - 1);
             updateCardImage(viewToSwap, card);
+          }
+
+          if (player.getId() == 1) {
+            player2HandView.setNumberOfCards(player.getHand().size());
+          }
+
+          if (player.getId() == 2) {
+            player3HandView.setNumberOfCards(player.getHand().size());
+          }
+
+          if (player.getId() == 3) {
+            player4HandView.setNumberOfCards(player.getHand().size());
           }
         }
 
