@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "368064581228",
+    "firebase_url": "https://tienlen-b1123.firebaseio.com",
+    "project_id": "tienlen-b1123",
+    "storage_bucket": "tienlen-b1123.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368064581228:android:34596e1f31fc4863",
+        "android_client_info": {
+          "package_name": "vitran.tienlen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368064581228-hnkd5arj681m5v2oer4r771htha9rn5q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACy3X4EIQgcpJVjNJxKwHOMZZYahPHVIM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

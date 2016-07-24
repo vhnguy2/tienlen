@@ -3,6 +3,9 @@ package vitran.tienlen.game.engine;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import vitran.tienlen.game.exception.CardDoesNotExistException;
 import vitran.tienlen.game.exception.PlayerAlreadyExistsException;
 import vitran.tienlen.game.models.Card;
@@ -18,11 +21,15 @@ public class TienLenGameEngine {
 
   private static final int MAX_NUM_PLAYERS = 4;
 
+  private final FirebaseDatabase database = FirebaseDatabase.getInstance();
+  private final DatabaseReference dbRef;
+
   private final TienLenTable table;
   private boolean isGameOver;
 
   public TienLenGameEngine() {
     table = new TienLenTable(MAX_NUM_PLAYERS);
+    dbRef = database.getReference("table1");
   }
 
   public void addPlayer(int position, TienLenPlayer player) throws PlayerAlreadyExistsException {
